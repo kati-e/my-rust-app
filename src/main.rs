@@ -27,7 +27,7 @@ struct Weather {
 
 impl Forecast {
     async fn get(city: &String, country_code: &String) -> Result<Self, ExitFailure> {
-        dotenv().ok(); // Load environment variables from .env file
+        dotenv().ok(); // Load api key from .env
         let api_key = env::var("API_KEY").expect("API_KEY environment variable not set");
         let url = format!("http://api.openweathermap.org/data/2.5/weather?q={},{}&appid={}", city, country_code, api_key);
         let url = Url::parse(&url)?;
@@ -36,6 +36,11 @@ impl Forecast {
             .await?
             .json::<Forecast>()
             .await?;
+            
+        // Need to do some error handling 
+        // But works if you put in correct vals
+        // Such as: city: Brisbane, country_code: AU
+
         Ok(response)
     }
 }
@@ -45,21 +50,44 @@ async fn main() -> Result<(), ExitFailure> {
     let args = Cli::from_args();
     let response = Forecast::get(&args.city, &args.country_code).await?;
 
-    println!("our city: {}, our country code: {}", args.city, args.country_code);
-    println!("Weather: {:?}", response.weather);
+    let description = response.weather.get(0).map(|weather| &weather.description);
 
-    println!(r"  |---------------------|");
-    println!(r"  |  WELCOME TO MY APP  |");
-    println!(r"  |---------------------|");
-    println!(r"  |                     |");
-    println!(r" /\/\ (O)       (O)   /\/\ ");
-    println!(r" \  /  \\ ______//    \  / ");
-    println!(r" / /   /         \     \ \ ");
-    println!(r" \ \  |///   V   ///   / / ");
-    println!(r"  \ \ \    ___     \  / /  ");
-    println!(r"   \ \/    ___      \/ /   ");
-    println!(r"    |     _______     |    ");
-    println!(r"    |________________/     ");
+    // if there is a description val avail
+    match description {
+        Some(description) => {
+        println!(r"  |---------------------|");
+        println!(r"      {}   ", description);
+        println!(r"  |---------------------|");
+        println!(r"  |                     |");
+        println!(r" /\/\ (O)       (O)   /\/\ ");
+        println!(r" \  /  \\ ______//    \  / ");
+        println!(r" / /   /         \     \ \ ");
+        println!(r" \ \  |///   V   ///   / / ");
+        println!(r"  \ \ \    ___     \  / /  ");
+        println!(r"   \ \/    ___      \/ /   ");
+        println!(r"    |     _______     |    ");
+        println!(r"    |________________/     ");
+        println!("The weather in {}, {} is {}.", args.city, args.country_code, description)},
+        //else
+        None => {
+            sad_crab();
+        },
+    }
+
+    fn sad_crab() {
+        println!(r"  |---------------------|");
+        println!(r"  |  No Data Available  |");
+        println!(r"  |---------------------|");
+        println!(r"  |                     |");
+        println!(r" /\/\ (_)       (_)   /\/\ ");
+        println!(r" \  /  \\ ______//    \  / ");
+        println!(r" / /   /         \     \ \ ");
+        println!(r" \ \  |      ^    \    / / ");
+        println!(r"  \ \ \    ___     \  / /  ");
+        println!(r"   \ \/    ___      \/ /   ");
+        println!(r"    |     _______     |    ");
+        println!(r"    |________________/     ");   
+    }
 
     Ok(())
 }
