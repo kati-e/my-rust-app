@@ -2,6 +2,8 @@ use structopt::StructOpt;
 use exitfailure::ExitFailure;
 use serde_derive::{Deserialize, Serialize};
 use reqwest::Url;
+use dotenv::dotenv;
+use std::env;
 
 #[derive(StructOpt)]
 struct Cli {
@@ -25,7 +27,8 @@ struct Weather {
 
 impl Forecast {
     async fn get(city: &String, country_code: &String) -> Result<Self, ExitFailure> {
-        let api_key = "ADD YOUR OWN KEY STRING HERE";
+        dotenv().ok(); // Load environment variables from .env file
+        let api_key = env::var("API_KEY").expect("API_KEY environment variable not set");
         let url = format!("http://api.openweathermap.org/data/2.5/weather?q={},{}&appid={}", city, country_code, api_key);
         let url = Url::parse(&url)?;
 
