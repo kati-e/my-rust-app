@@ -25,7 +25,7 @@ struct Weather {
 
 impl Forecast {
     async fn get(city: &String, country_code: &String) -> Result<Self, ExitFailure> {
-        let api_key = "8fd6c3c1b57ee880648cf831a6b77ae4";
+        let api_key = "ADD YOUR OWN KEY STRING HERE";
         let url = format!("http://api.openweathermap.org/data/2.5/weather?q={},{}&appid={}", city, country_code, api_key);
         let url = Url::parse(&url)?;
 
