@@ -52,11 +52,35 @@ async fn main() -> Result<(), ExitFailure> {
 
     let description = response.weather.get(0).map(|weather| &weather.description);
 
+    let length_of_flag: usize = 21;
+    let mut first_spacer: String = " ".to_string();
+    let mut second_spacer: String = " ".to_string();
+
     // if there is a description val avail
     match description {
         Some(description) => {
+
+            if description.len() < length_of_flag {
+                
+                let diff = length_of_flag - description.len();
+                
+                let indiv_spacer_length = diff/ 2;
+                first_spacer = std::iter::repeat(' ').take(indiv_spacer_length).collect();
+
+                if description.len() % 2 != 0 {
+                    //have equal spacing on both sides if it is an odd number
+                    second_spacer = std::iter::repeat(' ').take(indiv_spacer_length).collect();
+                } else {
+                    //take off a space from the end if it is even ?? dunno how this works but it does
+                    second_spacer = std::iter::repeat(' ').take(indiv_spacer_length+1).collect();
+                }
+
+            } else {
+                // handle situation where the description is longer than the flag :o 
+            }
+
         println!(r"  |---------------------|");
-        println!(r"      {}   ", description);
+        println!(r"  |{}{}{}|", first_spacer, description, second_spacer);
         println!(r"  |---------------------|");
         println!(r"  |                     |");
         println!(r" /\/\ (O)       (O)   /\/\ ");
