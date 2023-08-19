@@ -42,9 +42,9 @@ pub fn happy_weather_crab(description: &str) {
 }
 
 //Function for where there is an error occuring (>-_-)>
-pub fn sad_crab(err_message: String) {
+pub fn sad_crab(err_message: &str) {
     println!(r"  |---------------------|");
-    println!(r"  |{}|", err_message);
+    println!(r"  |{}|", format_response(err_message));
     println!(r"  |---------------------|");
     println!(r"  |                     |");
     println!(r" /\/\ (_)       (_)   /\/\ ");
@@ -84,10 +84,10 @@ impl Forecast {
     async fn get(city: &String, country_code: &String) -> Result<Self, ExitFailure> {
         dotenv().ok(); // Load api key from .env
 
-        let api_key = match env::var("API_KEY") {
+        let api_key: String= match env::var("API_KEY") {
             Ok(key) => key,
             Err(_) => {
-                sad_crab("No API Key Detected".to_string());
+                sad_crab("No API Key Detected");
                 std::process::exit(1); // Exit the program with a non-zero exit code
             }
         };
@@ -119,7 +119,7 @@ async fn main() -> Result<(), ExitFailure> {
 
         //else
         None => {
-            sad_crab("No Weather Data".to_string());
+            sad_crab("No Weather Data");
         }
     }
 
