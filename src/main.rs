@@ -76,7 +76,7 @@ pub fn format_response(description: &str) -> String {
 
         new_desc
     } else {
-        "".to_string() //haven't yet figured out what to do if the response is longer than the crab's flag
+        "".to_string() //haven't yet figured out what to do if the response is longer than the crab's flag....
     }
 }
 
