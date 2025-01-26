@@ -1,3 +1,5 @@
+I've archived this as I am no longer actively working on it.
+--------------
 Hi there, this is my first attempt at Rust.
 Is a little crab holding a weather forecast console app.
 
